@@ -1,5 +1,5 @@
 # Cookie-Bot
-A simple Discord bot made using Discord.js
+A simple Discord bot made using Discord.py
 
 To use This bot
 Step 1. Install python above 3.6 and all the required libraries (googlesearch and discord) using pip
