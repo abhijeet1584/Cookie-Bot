@@ -1,8 +1,7 @@
-# Discord
 import discord
 from discord.ext import commands
 import Google_search
-import database_controller
+import mongo
 
 # Version of The BOT
 cookie_version = '1.0.0 Alpha'
@@ -27,6 +26,20 @@ async def commands(context):
 
     await context.message.author.send(embed=embed)
 
+@cookie.command()
+async def rank(context):
+    userid = str(context.message.author.id)
+    serverid = str(context.message.guild.id)
+    data = mongo.retrive_data(userid=userid, serverid=serverid)
+    level = data['level']
+    xp = data['xp']
+    next_level = data['next_level']
+    embed = discord.Embed(title=f'{context.message.author.name}', color=0xffcc00)
+    embed.add_field(name='Level', value=f'{level}', inline=False)
+    embed.add_field(name='XP', value=f'{xp}', inline=False)
+    embed.add_field(name='Next Level', value=f'{next_level}', inline=False)
+
+    await context.message.channel.send(embed=embed)
 
 # SAY HI TO COOKIE
 @cookie.command()
@@ -71,21 +84,6 @@ async def google(context):
         embed = discord.Embed(title='No Results Were Found', description='Either the Connection to the Server was lost or No results were found', color=0xaeea79)
         await context.message.channel.send(embed=embed)
 
-# XP OF THE MEMBER
-@cookie.command()
-async def rank(context):
-    serverid = str(context.message.guild.id)
-    userid = str(context.message.author.id)
-    xp_lst = database_controller.fetch_data(serverID=serverid, userID=userid)
-    xp = xp_lst[2]
-    lvl = xp_lst[3]
-    next_lvl = xp_lst[4]
-    embed = discord.Embed(title=f'{context.message.author.name}', color=0x79c7ea)
-    embed.add_field(name='XP', value=f'{xp}', inline=False)
-    embed.add_field(name='Level', value=f'{lvl}', inline=False)
-    embed.add_field(name='XP for Next Level', value=f'{next_lvl}', inline=False)
-
-    await context.message.channel.send(embed=embed)
 
 # NEW MEMBER JOIN
 @cookie.event
@@ -95,12 +93,10 @@ async def on_member_join(context):
     fullid = userid + serverid
     print('New member joined')
     await context.message.channel.send(f'Hi, {context.message.author.mention}\nWelcome to {context.message.guild.name}\nHope You will have Fun here')
-    database_controller.new_entry(fullid)
 
 # WHEN THE BOT STARTS AND IS READY TO SEND MESSAGES
 @cookie.event
 async def on_ready():
-    database_controller.create_table() # This method creates table if it doesn't exist
     print('Cookie Bot version: ' + cookie_version)
     print('Bot started sucessfully')
 
@@ -111,18 +107,19 @@ async def on_message(message):
     if message.author == cookie.user:
         return
 
+    # if message.author == bot.user:
+    #     return
+
     else:
         userid = str(message.author.id)
         serverid = str(message.guild.id)
-        reached_new_level = database_controller.update_rank(serverID=serverid, userID=userid)
-
-        # The function return true if the level has been incrementeed
-        if reached_new_level == True:
-            lst = database_controller.fetch_data(serverID=serverid, userID=userid)
-            level = lst[3]
-            await message.channel.send(f'CONGRATULATIONS! {message.author.mention}, You reached Level {level}')
-
+        mongo.update_user(userid=userid, serverid=serverid)
+        lvl_passed = mongo.level_passed(userid=userid, serverid=serverid)
+        if lvl_passed:
+            lst = mongo.retrive_data(userid=userid, serverid=serverid)
+            level = lst['level']
+            await message.channel.send(f'CONGRATULATIONS!, {message.author.mention} You reached Level {level}')
 
     await cookie.process_commands(message)
 
-cookie.run('BOT TOKEN')
+cookie.run('NzY5MTMwOTg1ODE5MzQwODIw.X5KjDA.4oJbsiuap2S9ndCKZl8pWGKtJpo')
