@@ -3,9 +3,12 @@
 import pymongo
 from pymongo import MongoClient
 
+# API Info
+userName = "abhijeet:1584"
+cluster = "test"
+
 # Connecting to the Cluster
-cluster = MongoClient(
-    "mongodb+srv://abhijeet:1584@cluster0.3vcng.mongodb.net/test?retryWrites=true&w=majority")
+cluster = MongoClient(f"mongodb+srv://{userName}@cluster0.3vcng.mongodb.net/{cluster}?retryWrites=true&w=majority")
 print('Connected to mongodb')
 
 db = cluster['test']  # Setting the Database from the Cluster
@@ -48,7 +51,7 @@ def level_passed(userid, serverid):
         level = data[0]['level']
         level += 1
         next_level = data[0]['next_level']
-        next_level += 60
+        next_level += 90
         collection.update_many({'_id':ID}, {'$set':{'level':level, 'next_level': next_level}})
         return True        
 
