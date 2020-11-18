@@ -1,12 +1,15 @@
+# Libraries
 import discord
 import threading
 from discord.ext import commands
-import Google_search
+
+# Files
 import level_visualiser
 import mongo
-import wikipedia_search
 import bot_token
 import bad_joke
+import wikipedia_search
+import Google_search
 
 # Version of The BOT
 cookie_version = '1.3 Alpha'
