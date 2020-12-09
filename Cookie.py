@@ -4,12 +4,12 @@ import threading
 from discord.ext import commands
 
 # Files
-import level_visualiser
-import mongo
-import bot_token
-import bad_joke
-import wikipedia_search
-import Google_search
+from others import level_visualiser
+from api_libraries import mongo
+from others import bot_token
+from api_libraries import bad_joke
+from api_libraries import wikipedia_search
+from api_libraries import Google_search
 
 # Version of The BOT
 cookie_version = '1.3.2 Alpha'

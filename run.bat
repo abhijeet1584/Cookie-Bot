@@ -3,10 +3,12 @@
 
 @echo off
 
+echo Initialising...
+
 @REM Installing the "requirements.txt" file automatically
 
 pip install requirements.txt
 pause
 
-echo "running"
+echo Running
 python Cookie.py
