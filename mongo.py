@@ -4,8 +4,8 @@ import pymongo
 from pymongo import MongoClient
 
 # API Info
-userName = ""
-cluster = ""
+userName = "abhijeet:1584"
+cluster = "test"
 
 # Connecting to the Cluster
 cluster = MongoClient(f"mongodb+srv://{userName}@cluster0.3vcng.mongodb.net/{cluster}?retryWrites=true&w=majority")

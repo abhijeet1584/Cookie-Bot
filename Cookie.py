@@ -12,7 +12,7 @@ import wikipedia_search
 import Google_search
 
 # Version of The BOT
-cookie_version = '1.3 Alpha'
+cookie_version = '1.3.2 Alpha'
 
 # Version of Python
 python_version = '3.8.3rc1'
@@ -101,7 +101,7 @@ async def google(context):
     try:
         result = Google_search.search_on_google(query)
         await context.message.channel.send(result)
-    except Exception as e:
+    except Exception as error:
         embed = discord.Embed(title='No Results Were Found', description='Either the Connection to the Server was lost or No results were found', color=0xaeea79)
         await context.message.channel.send(embed=embed)
 
@@ -110,21 +110,14 @@ async def google(context):
 async def wiki(context):
     query = context.message.content.lower().strip().replace('_wiki', '')
     try:
-        title = wikipedia_search.wiki_full_page(query).title
-        result = wikipedia_search.wiki_summary_short(query)
+        result = wikipedia_search.wiki_summary_short(query=query)
+        title = wikipedia_search.wiki_full_page(query=query).title
         embed = discord.Embed(title=f"{title}", description=f"{result}", color=0x489AF7)
         await context.message.channel.send(embed=embed)
-    except Exception as e:
-        try:
-            result = wikipedia_search.wiki_search(query)
-            embed = discord.Embed(title="Maybe You Meant?", color=0x489AF7)
-            embed.add_field(name=f"{result[0]}", inline=False)
-            embed.add_field(name=f"{result[1]}", inline=False)
-            embed.add_field(name=f"{result[2]}", inline=False)
-            await context.message.channel.send(embed=embed)
 
-        except Exception as e:
-            await context.message.channel.send(f"ERROR, no result for {query} was found")
+    except Exception as error:
+        embed = discord.Embed(title="ERROR", description="Either no results were found\nOr the connection to the server was interrupted", color=0xe3430e)
+        await context.message.channel.send(embed=embed)
 
 # RANDOM BAD JOKE
 @cookie.command()
@@ -137,16 +130,6 @@ async def lamejoke(context):
         await context.message.channel.send(embed=embed)
     except Exception as e:
         print(e)
-
-
-# NEW MEMBER JOIN
-@cookie.event
-async def on_member_join(context):
-    serverid = str(context.message.guild.id)
-    userid = str(context.message.author.id)
-    fullid = userid + serverid
-    print('New member joined')
-    await context.message.channel.send(f'Hi, {context.message.author.mention}\nWelcome to {context.message.guild.name}\nHope You will have Fun here')
 
 # WHEN THE BOT STARTS AND IS READY TO SEND MESSAGES
 @cookie.event
