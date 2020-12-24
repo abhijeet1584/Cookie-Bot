@@ -7,7 +7,7 @@ echo Initialising...
 
 @REM Installing the "requirements.txt" file automatically
 
-pip install requirements.txt
+pip install -r requirements.txt
 pause
 
 echo Running
